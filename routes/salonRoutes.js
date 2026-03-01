@@ -155,5 +155,87 @@ router.patch(
     }
   }
 );
+// UPDATE WORKING HOURS & SLOT DURATION
+router.put("/update-working-hours/:salonId", async (req, res) => {
+  try {
+    const { start, end, slotDuration } = req.body;
+
+    const updatedSalon = await Salon.findByIdAndUpdate(
+      req.params.salonId,
+      {
+        workingHours: {
+          start,
+          end
+        },
+        slotDuration
+      },
+      { new: true }
+    );
+
+    res.json({
+      message: "Working hours updated successfully",
+      salon: updatedSalon
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+// =======================================================
+// ADMIN: GET ALL SALONS (INCLUDING UNAPPROVED)
+// =======================================================
+
+router.get("/admin/all", async (req, res) => {
+  try {
+    const salons = await Salon.find();
+    res.json(salons);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+// =======================================================
+// ADMIN: APPROVE SALON
+// =======================================================
+
+router.put("/admin/approve/:salonId", async (req, res) => {
+  try {
+
+    const salon = await Salon.findByIdAndUpdate(
+      req.params.salonId,
+      { approved: true },
+      { new: true }
+    );
+
+    res.json({
+      message: "Salon Approved",
+      salon
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+// =======================================================
+// ADMIN: DISABLE SALON
+// =======================================================
+
+router.put("/admin/disable/:salonId", async (req, res) => {
+  try {
+
+    const salon = await Salon.findByIdAndUpdate(
+      req.params.salonId,
+      { active: false },
+      { new: true }
+    );
+
+    res.json({
+      message: "Salon Disabled",
+      salon
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

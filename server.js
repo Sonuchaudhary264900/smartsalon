@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const adminRoutes = require("./routes/adminRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -9,7 +10,7 @@ const app = express();
 /* ------------------------------
    MIDDLEWARE
 ------------------------------ */
-
+app.use("/api/admin", adminRoutes);
 // Allow frontend requests
 app.use(cors({
   origin: "*", // You can restrict later with your Vercel URL

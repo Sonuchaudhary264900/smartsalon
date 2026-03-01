@@ -81,6 +81,26 @@ router.patch("/cancel/:id", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// UPDATE BOOKING STATUS
+router.put("/update-status/:bookingId", async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    const booking = await Booking.findByIdAndUpdate(
+      req.params.bookingId,
+      { status },
+      { new: true }
+    );
+
+    res.json({
+      message: "Booking status updated",
+      booking
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 // GET EARNINGS BY SALON
 router.get(
   "/earnings/:salonId",
@@ -103,6 +123,31 @@ router.get(
     res.json({
       totalEarnings: total,
       totalBookings: bookings.length
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+// =======================================================
+// CUSTOMER CANCEL BOOKING
+// This allows customer to cancel their own booking
+// Only updates status to "Cancelled"
+// =======================================================
+
+router.put("/cancel/:bookingId", async (req, res) => {
+  try {
+
+    // Find booking by ID and update status
+    const booking = await Booking.findByIdAndUpdate(
+      req.params.bookingId,
+      { status: "Cancelled" },  // Change status
+      { new: true }             // Return updated document
+    );
+
+    res.json({
+      message: "Booking cancelled successfully",
+      booking
     });
 
   } catch (error) {
